@@ -1,13 +1,14 @@
 const token = localStorage.getItem("token");
 
 const tablaVentas = document.getElementById("tablaVentas");
+const API_URL = "https://smartpyme-d5rl.onrender.com";
 
 async function cargarVentas(){
 
     try {
 
         const response = await fetch(
-            "http://localhost:8080/api/ventas",
+            `${API_URL}/api/ventas`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -95,7 +96,7 @@ async function eliminarVenta(id){
     try {
 
         const response = await fetch(
-            `http://localhost:8080/api/ventas/${id}`,
+            `${API_URL}/api/ventas/${id}`,
             {
                 method: "DELETE",
 

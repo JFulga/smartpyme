@@ -1,5 +1,7 @@
 const token = localStorage.getItem("token");
 
+const API_URL = "https://smartpyme-d5rl.onrender.com";
+
 const form = document.getElementById("formProducto");
 
 form.addEventListener("submit", async function (e) {
@@ -11,17 +13,17 @@ form.addEventListener("submit", async function (e) {
     const categoria = document.getElementById("categoria").value;
 
     try {
-        const response = await fetch("http://localhost:8080/api/productos", {
+        const response = await fetch(`${API_URL}/api/productos`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
             body: JSON.stringify({
-                nombre: nombre,
-                precio: precio,
-                stock: stock,
-                categoria:categoria
+                nombre,
+                precio,
+                stock,
+                categoria
             })
         });
 
@@ -43,14 +45,12 @@ if (!token) {
     window.location.href = "login.html";
 }
 
-fetch("http://localhost:8080/api/productos", {
+fetch(`${API_URL}/api/productos`, {
     method: "GET",
     headers: {
         "Authorization": "Bearer " + token
     }
 })
-
-
 
     .then(response => {
         if (!response.ok) {
@@ -58,12 +58,15 @@ fetch("http://localhost:8080/api/productos", {
         }
         return response.json();
     })
+
     .then(data => {
+
         console.log("DATA:", data);
 
         const tabla = document.getElementById("tablaProductos");
 
         data.forEach(producto => {
+
             tabla.innerHTML += `
         <tr>
             <td>${producto.id}</td>
@@ -76,20 +79,24 @@ fetch("http://localhost:8080/api/productos", {
                 <button onclick="eliminarProducto(${producto.id})">Ocultar</button>
             </td>
         </tr>
-    `;
+        `;
         });
     })
+
     .catch(error => {
         console.error(error);
         alert(error.message);
     });
+
 async function eliminarProducto(id) {
+
     const confirmar = confirm("¿Eliminar producto?");
 
     if (!confirmar) return;
 
     try {
-        const response = await fetch(`http://localhost:8080/api/productos/${id}`, {
+
+        const response = await fetch(`${API_URL}/api/productos/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token
@@ -101,14 +108,17 @@ async function eliminarProducto(id) {
         }
 
         alert("Producto eliminado");
+
         location.reload();
 
     } catch (error) {
+
         alert(error.message);
     }
 }
 
 async function editarProducto(id) {
+
     const nombre = prompt("Nuevo nombre:");
     const precio = prompt("Nuevo precio:");
     const stock = prompt("Nuevo stock:");
@@ -120,7 +130,8 @@ async function editarProducto(id) {
     }
 
     try {
-        const response = await fetch(`http://localhost:8080/api/productos/${id}`, {
+
+        const response = await fetch(`${API_URL}/api/productos/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -139,15 +150,20 @@ async function editarProducto(id) {
         }
 
         alert("Producto actualizado");
+
         location.reload();
 
     } catch (error) {
+
         alert(error.message);
     }
 }
+
 async function restaurarProducto(id) {
+
     try {
-        const response = await fetch(`http://localhost:8080/api/productos/restaurar/${id}`, {
+
+        const response = await fetch(`${API_URL}/api/productos/restaurar/${id}`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + token
@@ -159,9 +175,11 @@ async function restaurarProducto(id) {
         }
 
         alert("Producto restaurado");
+
         location.reload();
 
     } catch (error) {
+
         alert(error.message);
     }
 }

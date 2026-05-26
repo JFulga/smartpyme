@@ -1,5 +1,7 @@
 const token = localStorage.getItem("token");
 
+const API_URL = "https://smartpyme-d5rl.onrender.com";
+
 const clienteSelect = document.getElementById("clienteSelect");
 const productoSelect = document.getElementById("productoSelect");
 const cantidadInput = document.getElementById("cantidad");
@@ -18,7 +20,7 @@ let carrito = [];
 async function cargarClientes(){
 
     const response = await fetch(
-        "http://localhost:8080/api/clientes",
+        `${API_URL}/api/clientes`,
         {
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -46,7 +48,7 @@ async function cargarClientes(){
 async function cargarProductos(){
 
     const response = await fetch(
-        "http://localhost:8080/api/productos",
+        `${API_URL}/api/productos`,
         {
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -100,8 +102,6 @@ document.getElementById("btnAgregar")
 
             return;
         }
-
-        // EVITAR PRODUCTOS REPETIDOS
 
         const existente = carrito.find(
             item => item.productoId === parseInt(productoId)
@@ -254,7 +254,7 @@ document.getElementById("btnGuardarVenta")
         try {
 
             const response = await fetch(
-                "http://localhost:8080/api/ventas",
+                `${API_URL}/api/ventas`,
                 {
                     method: "POST",
 
