@@ -1,4 +1,9 @@
 const token = localStorage.getItem("token");
+
+if (!token) {
+    window.location.href = "login.html";
+}
+
 const API_URL = "https://smartpyme-d5rl.onrender.com";
 
 async function cargarDashboard() {
@@ -7,9 +12,11 @@ async function cargarDashboard() {
     const ventasResponse = await fetch(`${API_URL}/api/ventas`, {
         headers: {
             "Authorization": `Bearer ${token}`
-            }
         }
-    );
+    });
+
+
+}
 
     const ventas = await ventasResponse.json();
 
@@ -46,6 +53,6 @@ async function cargarDashboard() {
     const bajoStock = productos.filter(p => p.stock <= 5);
 
     document.getElementById("stockBajo").innerText = bajoStock.length;
-}
+
 
 cargarDashboard();
