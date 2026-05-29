@@ -2,14 +2,19 @@ package com.tienda.smartP.controller;
 
 import com.tienda.smartP.dto.AuthRequestDTO;
 import com.tienda.smartP.dto.AuthResponseDTO;
+import com.tienda.smartP.dto.RegisterRequest;
+import com.tienda.smartP.model.User;
+import com.tienda.smartP.repository.UserRepository;
 import com.tienda.smartP.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +23,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 
 public class AuthController {
+
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
 
@@ -42,4 +51,26 @@ public class AuthController {
 
         return new AuthResponseDTO(token);
     }
+    @PostMapping("/auth/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            return ResponseEntity.badRequest()
+                    .body("El usuario ya existe");
+        }
+
+        User user = new User();
+
+        user.setUsername(request.getUsername());
+
+        user.setPassword(
+                passwordEncoder.encode(request.getPassword())
+        );
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Usuario registrado");
+    }
+
+
 }
