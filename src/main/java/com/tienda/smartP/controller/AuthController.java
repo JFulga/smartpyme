@@ -68,7 +68,7 @@ public class AuthController {
                 passwordEncoder.encode(request.getPassword())
         );
 
-        user.setRole(Role.VENDEDOR);
+        user.setRole(Role.ADMIN);
 
         userRepository.save(user);
 
