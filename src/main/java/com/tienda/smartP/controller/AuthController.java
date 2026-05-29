@@ -52,7 +52,7 @@ public class AuthController {
 
         return new AuthResponseDTO(token);
     }
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
