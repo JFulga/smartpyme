@@ -3,6 +3,7 @@ package com.tienda.smartP.controller;
 import com.tienda.smartP.dto.AuthRequestDTO;
 import com.tienda.smartP.dto.AuthResponseDTO;
 import com.tienda.smartP.dto.RegisterRequest;
+import com.tienda.smartP.model.Role;
 import com.tienda.smartP.model.User;
 import com.tienda.smartP.repository.UserRepository;
 import com.tienda.smartP.security.JwtService;
@@ -66,6 +67,8 @@ public class AuthController {
         user.setPassword(
                 passwordEncoder.encode(request.getPassword())
         );
+
+        user.setRole(Role.VENDEDOR);
 
         userRepository.save(user);
 
