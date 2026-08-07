@@ -1,7 +1,5 @@
 const token = localStorage.getItem("token");
 
-const API_URL = "https://smartpyme-d5rl.onrender.com";
-
 const form = document.getElementById("formProducto");
 
 form.addEventListener("submit", async function (e) {
@@ -13,7 +11,7 @@ form.addEventListener("submit", async function (e) {
     const categoria = document.getElementById("categoria").value;
 
     try {
-        const response = await fetch(`${API_URL}/api/productos`, {
+        const response = await fetch(`/api/productos`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -45,7 +43,7 @@ if (!token) {
     window.location.href = "login.html";
 }
 
-fetch(`${API_URL}/api/productos`, {
+fetch(`/api/productos`, {
     method: "GET",
     headers: {
         "Authorization": "Bearer " + token
@@ -96,7 +94,7 @@ async function eliminarProducto(id) {
 
     try {
 
-        const response = await fetch(`${API_URL}/api/productos/${id}`, {
+        const response = await fetch(`/api/productos/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token

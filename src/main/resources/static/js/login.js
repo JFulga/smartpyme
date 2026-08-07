@@ -8,9 +8,8 @@ form.addEventListener("submit", async function (e) {
     const mensaje = document.getElementById("mensaje");
 
     try {
-        const API_URL = "https://smartpyme-d5rl.onrender.com";
 
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

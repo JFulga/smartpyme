@@ -1,7 +1,6 @@
 const token = localStorage.getItem("token");
 
 const tablaVentas = document.getElementById("tablaVentas");
-const API_URL = "https://smartpyme-d5rl.onrender.com";
 
 async function cargarVentas(){
 

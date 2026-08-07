@@ -4,12 +4,10 @@ if (!token) {
     window.location.href = "login.html";
 }
 
-const API_URL = "https://smartpyme-d5rl.onrender.com";
-
 async function cargarDashboard() {
 
     // VENTAS
-    const ventasResponse = await fetch(`${API_URL}/api/ventas`, {
+    const ventasResponse = await fetch(`/api/ventas`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -27,7 +25,7 @@ async function cargarDashboard() {
 
 
     // CLIENTES
-    const clientesResponse = await fetch(`${API_URL}/api/clientes`, {
+    const clientesResponse = await fetch(`/api/clientes`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -40,7 +38,7 @@ async function cargarDashboard() {
 
 
     // PRODUCTOS
-    const productosResponse = await fetch(`${API_URL}/api/productos`, {
+    const productosResponse = await fetch(`/api/productos`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }

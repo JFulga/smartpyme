@@ -8,7 +8,7 @@ const form = document.getElementById("formCliente");
 
 const tabla = document.getElementById("tablaClientes");
 
-const API_URL = "https://smartpyme-d5rl.onrender.com/api/clientes";
+const API_URL = "/api/clientes";
 
 let clienteEditando = null;
 

@@ -1,7 +1,5 @@
 const token = localStorage.getItem("token");
 
-const API_URL = "https://smartpyme-d5rl.onrender.com";
-
 const clienteSelect = document.getElementById("clienteSelect");
 const productoSelect = document.getElementById("productoSelect");
 const cantidadInput = document.getElementById("cantidad");
