@@ -70,7 +70,8 @@ public class AuthController {
 
         );
 
-        user.setRole(Role.ADMIN);
+        // Public registration never accepts a role from the client.
+        user.setRole(Role.VENDEDOR);
 
         userRepository.save(user);
 
