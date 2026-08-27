@@ -4,6 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.WeakKeyException;
+import io.jsonwebtoken.io.Decoders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -12,14 +15,21 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY =
-            "esta_es_una_clave_secreta_muy_larga_y_segura_para_mi_tienda_smartp_2024";
+    private final Key signingKey;
 
-    private Key getSignInKey() {
+    public JwtService(@Value("${jwt.secret}") String base64Secret) {
+        if (base64Secret == null || base64Secret.isBlank()) {
+            throw new IllegalStateException("JWT_SECRET must be configured");
+        }
 
-        return Keys.hmacShaKeyFor(
-                SECRET_KEY.getBytes()
-        );
+        try {
+            signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(base64Secret));
+        } catch (IllegalArgumentException | WeakKeyException exception) {
+            throw new IllegalStateException(
+                    "JWT_SECRET must be a valid Base64-encoded key of at least 256 bits",
+                    exception
+            );
+        }
     }
 
     public String generateToken(String username) {
@@ -31,7 +41,7 @@ public class JwtService {
                         new Date(System.currentTimeMillis()
                                 + 1000 * 60 * 60 * 24)
                 )
-                .signWith(getSignInKey(),
+                .signWith(signingKey,
                         SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -45,7 +55,7 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
 
         return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

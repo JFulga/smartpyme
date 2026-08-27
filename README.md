@@ -146,7 +146,13 @@ Editar `application.properties`
 spring.datasource.url=jdbc:mysql://localhost:3306/smartp
 spring.datasource.username=root
 spring.datasource.password=tu_password
+# Base64 de al menos 32 bytes aleatorios; no almacenar este valor en el repositorio.
+JWT_SECRET=tu_secreto_base64
 ```
+
+En Render, configure `JWT_SECRET` como una variable de entorno secreta. Rote el
+valor que previamente estuvo en el repositorio: los tokens emitidos con la clave
+anterior quedarán invalidados.
 
 ### Ejecutar
 

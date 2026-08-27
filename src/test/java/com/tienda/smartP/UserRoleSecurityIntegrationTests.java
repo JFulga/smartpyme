@@ -5,6 +5,10 @@ import com.tienda.smartP.model.Role;
 import com.tienda.smartP.model.User;
 import com.tienda.smartP.repository.UserRepository;
 import com.tienda.smartP.security.JwtService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.sql.init.mode=never"
 })
 class UserRoleSecurityIntegrationTests {
+
+    private static final String TEST_JWT_SECRET = "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=";
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
@@ -101,6 +109,33 @@ class UserRoleSecurityIntegrationTests {
         String token = objectMapper.readTree(loginResponse).get("token").asText();
         createUser(token, "creado-con-login", Role.VENDEDOR).andExpect(status().isCreated());
         assertThat(roleOf("creado-con-login")).isEqualTo(Role.VENDEDOR);
+    }
+
+    @Test
+    void malformedJwtIsUnauthorizedInsteadOfServerError() throws Exception {
+        createUser("not-a-jwt", "malformed-token", Role.VENDEDOR)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void tamperedJwtIsUnauthorizedInsteadOfServerError() throws Exception {
+        String token = tokenFor("admin");
+        String tamperedToken = "x" + token.substring(1);
+
+        createUser(tamperedToken, "tampered-token", Role.VENDEDOR)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void expiredJwtIsUnauthorizedInsteadOfServerError() throws Exception {
+        String expiredToken = Jwts.builder()
+                .setSubject("admin")
+                .setExpiration(new Date(System.currentTimeMillis() - 60_000))
+                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(TEST_JWT_SECRET)), SignatureAlgorithm.HS256)
+                .compact();
+
+        createUser(expiredToken, "expired-token", Role.VENDEDOR)
+                .andExpect(status().isUnauthorized());
     }
 
     private void createExistingUser(String username, Role role) {

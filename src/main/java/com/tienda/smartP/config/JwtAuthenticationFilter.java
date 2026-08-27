@@ -1,6 +1,7 @@
 package com.tienda.smartP.config;
 
 import com.tienda.smartP.security.JwtService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,32 +38,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = authHeader.substring(7);
-        String username = jwtService.extractUsername(jwt);
+        try {
+            String jwt = authHeader.substring(7);
+            String username = jwtService.extractUsername(jwt);
 
-        if (username != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(jwt, username)) {
+                if (jwtService.isTokenValid(jwt, username)) {
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authToken);
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authToken);
+                }
             }
+        } catch (JwtException | IllegalArgumentException exception) {
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
