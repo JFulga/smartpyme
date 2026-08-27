@@ -16,4 +16,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findByActivoTrue();
 
     List<Producto> findByActivoFalse();
+
+    List<Producto> findByActivoTrueAndStockLessThan(Integer limite);
 }
