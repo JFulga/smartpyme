@@ -18,7 +18,7 @@ let carrito = [];
 async function cargarClientes(){
 
     const response = await fetch(
-        `${API_URL}/api/clientes`,
+        `/api/clientes`,
         {
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -46,7 +46,7 @@ async function cargarClientes(){
 async function cargarProductos(){
 
     const response = await fetch(
-        `${API_URL}/api/productos`,
+        `/api/productos`,
         {
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -252,7 +252,7 @@ document.getElementById("btnGuardarVenta")
         try {
 
             const response = await fetch(
-                `${API_URL}/api/ventas`,
+                `/api/ventas`,
                 {
                     method: "POST",
 

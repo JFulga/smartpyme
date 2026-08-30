@@ -7,7 +7,7 @@ async function cargarVentas(){
     try {
 
         const response = await fetch(
-            `${API_URL}/api/ventas`,
+            `/api/ventas`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -95,7 +95,7 @@ async function eliminarVenta(id){
     try {
 
         const response = await fetch(
-            `${API_URL}/api/ventas/${id}`,
+            `/api/ventas/${id}`,
             {
                 method: "DELETE",
 
